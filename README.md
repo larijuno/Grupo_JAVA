@@ -20,3 +20,4 @@ Projeto: criar um sistema de AAC ([ver link passado e comentário de aula](https
 
 Exemplo: https://www.papuguinho.com/
 
+https://mvnrepository.com/artifact/io.github.ollama4j/ollama4j/1.1.6
