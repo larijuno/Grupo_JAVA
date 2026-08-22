@@ -1,4 +1,6 @@
 // GEMMA 3 - A PARTIR DE 770M
+// o prof comentou q o uso do gemma 4 está incorreto, tem qu ser o gemma 3, conforme o detalhamento de modelo do hugging face.
+// a equipe da Allana, Livia e Vitoria V usaram o gemma 3, a partir dos 770m, ainda não funcionou, então seria um superior a este.
 
 package io.github.ollama4j.examples;
 
