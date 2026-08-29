@@ -16,7 +16,7 @@ public class Main {
         // We're just using our quick-setup utility here to instantiate Ollama. Use the following
         // to set it up with your Ollama configuration.
         Ollama ollama = new Ollama("http://127.0.0.1:11434/");
-        String model = "gemma4:e2b";
+        String model = "gemma3:1b";
         ollama.pullModel(model);
         ollama.setRequestTimeoutSeconds(300);
         OllamaChatRequest builder = OllamaChatRequest.builder().withModel(model);
