@@ -2,6 +2,7 @@
 
 package io.github.ollama4j.examples;
 
+import java.util.Scanner;
 import io.github.ollama4j.Ollama;
 import io.github.ollama4j.models.chat.OllamaChatMessageRole;
 import io.github.ollama4j.models.chat.OllamaChatRequest;
@@ -19,18 +20,23 @@ public class Main {
         ollama.setRequestTimeoutSeconds(300);
         OllamaChatRequest builder = OllamaChatRequest.builder().withModel(model);
 
+        String tema;
+        Scanner s = new Scanner(System.in);
+        System.out.println("Digite o tema:");
+        tema = s.next();
+
         // create first user question
         OllamaChatRequest requestModel =
                 builder.withMessage(OllamaChatMessageRole.USER, "Você monta pranchas de CAA (pictogramas, pt-BR). " +
-                                "Para o PEDIDO, liste ~6 itens concretos e relevantes do tema ESCOLA," +
+                                "Para o tema, liste ~12 itens concretos e relevantes do tema:" + tema +
                                 "um por linha, no formato: tipo | palavra | sinônimo;" +
-                                "Indique apenas 1 palavra de cada tipo: Verbos, Substantivos, Adjetivos, Estratégias, Lugares, Pronomes;" +
+                                "Indique 2 palavras de cada tipo: Verbos, Substantivos, Adjetivos, Estratégias, Lugares, Pronomes;" +
                                 "Exemplos dos tipos de palavras:" +
                                 "Verbos: ações como querer, ir, comer;" +
-                                "Substantivos: objetos e lugares como água, casa, banheiro;" +
-                                "Adjetivos: características como bom, grande, feliz;" +
+                                "Substantivos: objetos como água, brinquedo, amor;" +
+                                "Adjetivos: características como bom, grande, feio;" +
                                 "Estratégias / Fórmulas sociais: expressões como olá, obrigado, por favor;" +
-                                "Lugares: posições e recintos como escola, hospital;" +
+                                "Lugares: posições e recintos como escola, hospital, casa;" +
                                 "Pessoas / Pronomes: como eu, você, mãe;" +
                                 "não repita palavras." +
                                 "Só a lista.")
@@ -41,23 +47,5 @@ public class Main {
 
         System.out.println(
                 "Resposta:" + chatResult.getResponseModel().getMessage().getResponse());
-
-        /*
-        // create next userQuestion
-        requestModel =
-                builder.withMessages(chatResult.getChatHistory())
-                        .withMessage(
-                                OllamaChatMessageRole.USER, "And what is the second largest city?")
-                        .build();
-
-        // "continue" conversation with model
-        chatResult = ollama.chat(requestModel, null);
-
-        System.out.println(
-                "Second answer: " + chatResult.getResponseModel().getMessage().getResponse());
-
-        System.out.println("Chat History: " + chatResult.getChatHistory()); /*
-
-         */
     }
 }
