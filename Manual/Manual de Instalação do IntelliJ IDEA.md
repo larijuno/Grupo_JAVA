@@ -1,4 +1,4 @@
-# Manual de uso do IntelliJ IDEA
+# Manual de Instalação do IntelliJ IDEA
 
 Passo a Passo de Instalação:
 
