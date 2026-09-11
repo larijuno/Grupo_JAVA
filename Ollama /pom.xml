@@ -8,6 +8,10 @@
     <artifactId>Bertoti</artifactId>
     <version>1.0-SNAPSHOT</version>
 
+    <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
     <!-- Source: https://mvnrepository.com/artifact/io.github.ollama4j/ollama4j -->
     <dependencies>
         <dependency>
