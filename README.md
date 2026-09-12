@@ -94,6 +94,8 @@ Para o Manual do Sistema de AAC [Clique aqui!]
 ### 📚 REFERENCIAS
 
 -   Exemplo: https://www.papuguinho.com/
+-   https://github.com/ollama4j/ollama4j-examples/blob/main/src/main/java/io/github/ollama4j/examples/ChatExample.java
+-   https://docs.langchain4j.dev/integrations/image-models/ollama
 -   https://huggingface.co/tardellirs/aac-board-generator-770m-ptbr-GGUF
 -   tardellirs/aac-pictogram-retriever-ptbr · Hugging Face
 -   tardellirs/aac-board-generator-770m-ptbr · Hugging Face
