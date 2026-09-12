@@ -1,0 +1,46 @@
+package org.example;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Comparator;
+
+/**
+ * Índice em memória dos itens de vocabulário/pictogramas já com embedding calculado.
+ * Permite buscar os itens mais parecidos semanticamente com uma frase digitada
+ * ou transcrita de fala — é essa busca que faz a "associação de conteúdos" do CAA.
+ */
+public class VocabularyIndex {
+
+    private final List<PictogramItem> itens = new ArrayList<>();
+    private final EmbeddingService embeddingService;
+
+    public VocabularyIndex(EmbeddingService embeddingService) {
+        this.embeddingService = embeddingService;
+    }
+
+    /** Adiciona um item ao índice, calculando e guardando seu embedding. */
+    public void adicionar(PictogramItem item) throws Exception {
+        item.setEmbedding(embeddingService.embed(item.textoParaEmbedding()));
+        itens.add(item);
+    }
+
+    /**
+     * Retorna os top-K itens mais parecidos semanticamente com a consulta,
+     * ordenados do mais para o menos relevante.
+     */
+    public List<PictogramItem> buscar(String consulta, int topK) throws Exception {
+        List<Double> vetorConsulta = embeddingService.embed(consulta);
+
+        List<PictogramItem> ordenados = new ArrayList<>(itens);
+        ordenados.sort(Comparator.comparingDouble(
+                (PictogramItem item) -> EmbeddingService.cosineSimilarity(vetorConsulta, item.getEmbedding())
+        ).reversed());
+
+        int limite = Math.min(topK, ordenados.size());
+        return ordenados.subList(0, limite);
+    }
+
+    public List<PictogramItem> getItens() {
+        return itens;
+    }
+}
