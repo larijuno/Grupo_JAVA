@@ -1,0 +1,100 @@
+package org.example;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Scanner;
+
+import io.github.ollama4j.Ollama;
+import io.github.ollama4j.models.chat.OllamaChatMessageRole;
+import io.github.ollama4j.models.chat.OllamaChatRequest;
+import io.github.ollama4j.models.chat.OllamaChatResult;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        Ollama ollama = new Ollama("http://127.0.0.1:11434/");
+        String modeloChat = "gemma3:1b";
+        String modeloEmbedding = "bge-m3"; // multilíngue, bom para pt-BR
+
+        ollama.pullModel(modeloChat);
+        ollama.setRequestTimeoutSeconds(300);
+        OllamaChatRequest builder = OllamaChatRequest.builder().withModel(modeloChat);
+
+        Scanner s = new Scanner(System.in);
+        System.out.println("Digite o tema:");
+        String tema = s.nextLine();
+
+        // 1) Gera a lista de itens da prancha com o modelo de chat (seu código original)
+        OllamaChatRequest requestModel = builder
+                .withMessage(OllamaChatMessageRole.USER, montarPrompt(tema))
+                .build();
+
+        OllamaChatResult chatResult = ollama.chat(requestModel, null);
+        String resposta = chatResult.getResponseModel().getMessage().getResponse();
+        System.out.println("Itens gerados:\n" + resposta);
+
+        // 2) Faz o parsing das linhas "tipo | palavra | sinônimo"
+        List<PictogramItem> itensGerados = parsearItens(resposta);
+        System.out.println("\n" + itensGerados.size() + " itens reconhecidos no formato esperado.");
+
+        // 3) Gera embeddings para todos os itens e indexa
+        EmbeddingService embeddingService = new EmbeddingService(ollama, modeloEmbedding);
+        VocabularyIndex indice = new VocabularyIndex(embeddingService);
+        for (PictogramItem item : itensGerados) {
+            indice.adicionar(item);
+        }
+        System.out.println(indice.getItens().size() + " itens indexados com embeddings.");
+
+        // 4) Loop de busca semântica: o usuário digita algo (ex.: fala transcrita)
+        //    e o sistema sugere os pictogramas mais próximos semanticamente
+        System.out.println("\nDigite uma frase/palavra para buscar pictogramas (ou 'sair'):");
+        String consulta;
+        while (!(consulta = s.nextLine()).trim().equalsIgnoreCase("sair")) {
+            List<PictogramItem> sugestoes = indice.buscar(consulta, 5);
+            System.out.println("Sugestões:");
+            for (PictogramItem sugestao : sugestoes) {
+                System.out.println("  - " + sugestao);
+            }
+            System.out.println("\nDigite outra consulta (ou 'sair'):");
+        }
+    }
+
+    private static String montarPrompt(String tema) {
+        return "Você monta pranchas de CAA (pictogramas, pt-BR). " +
+                "Para o tema, liste ~12 itens concretos e relevantes do tema:" + tema +
+                "um por linha, no formato: tipo | palavra | sinônimo;" +
+                "Indique 2 palavras de cada tipo: Verbos, Substantivos, Adjetivos, Estratégias, Lugares, Pronomes;" +
+                "Exemplos dos tipos de palavras:" +
+                "Verbos: ações como querer, ir, comer;" +
+                "Substantivos: objetos como água, brinquedo, amor;" +
+                "Adjetivos: características como bom, grande, feio;" +
+                "Estratégias / Fórmulas sociais: expressões como olá, obrigado, por favor;" +
+                "Lugares: posições e recintos como escola, hospital, casa;" +
+                "Pessoas / Pronomes: como eu, você, mãe;" +
+                "não repita palavras." +
+                "Só a lista.";
+    }
+
+    /** Extrai objetos PictogramItem das linhas "tipo | palavra | sinônimo" geradas pelo modelo. */
+    private static List<PictogramItem> parsearItens(String resposta) {
+        List<PictogramItem> itens = new ArrayList<>();
+        String[] linhas = resposta.split("\\r?\\n");
+
+        for (String linhaBruta : linhas) {
+            String linha = linhaBruta.trim();
+            if (!linha.contains("|")) {
+                continue;
+            }
+            String[] partes = linha.split("\\|");
+            String tipo = partes.length > 0 ? partes[0].trim() : "";
+            String palavra = partes.length > 1 ? partes[1].trim() : "";
+            String sinonimo = partes.length > 2 ? partes[2].trim() : "";
+            if (palavra.isEmpty()) {
+                continue;
+            }
+            itens.add(new PictogramItem(tipo, palavra, sinonimo));
+        }
+        return itens;
+    }
+}
