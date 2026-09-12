@@ -1,0 +1,57 @@
+package org.example;
+
+import io.github.ollama4j.Ollama;
+import io.github.ollama4j.models.embed.OllamaEmbedRequest;
+import io.github.ollama4j.models.embed.OllamaEmbedRequestBuilder;
+import io.github.ollama4j.models.embed.OllamaEmbedResult;
+
+import java.util.List;
+
+/**
+ * Encapsula a geração de embeddings via Ollama e o cálculo de similaridade
+ * entre vetores.
+ *
+ * Modelo recomendado para pt-BR: "bge-m3" (multilíngue, ótimo para português).
+ * Alternativas mais leves: "nomic-embed-text" ou "paraphrase-multilingual".
+ */
+public class EmbeddingService {
+
+    private final Ollama ollama;
+    private final String embeddingModel;
+
+    public EmbeddingService(Ollama ollama, String embeddingModel) throws Exception {
+        this.ollama = ollama;
+        this.embeddingModel = embeddingModel;
+        this.ollama.pullModel(embeddingModel);
+    }
+
+    /** Gera o vetor de embedding de um texto. */
+    public List<Double> embed(String texto) throws Exception {
+        OllamaEmbedRequest request = OllamaEmbedRequestBuilder
+                .getInstance(embeddingModel, texto)
+                .build();
+
+        OllamaEmbedResult result = ollama.embed(request);
+
+        // A API do Ollama retorna uma lista de vetores (um por texto de entrada).
+        // Como mandamos um único texto, pegamos o primeiro.
+        return result.getEmbeddings().get(0);
+    }
+
+    /**
+     * Similaridade do cosseno entre dois vetores.
+     * Retorna um valor entre -1 e 1: quanto mais perto de 1, mais parecido semanticamente.
+     */
+    public static double cosineSimilarity(List<Double> a, List<Double> b) {
+        double dot = 0, normA = 0, normB = 0;
+        for (int i = 0; i < a.size(); i++) {
+            dot += a.get(i) * b.get(i);
+            normA += a.get(i) * a.get(i);
+            normB += b.get(i) * b.get(i);
+        }
+        if (normA == 0 || normB == 0) {
+            return 0;
+        }
+        return dot / (Math.sqrt(normA) * Math.sqrt(normB));
+    }
+}
