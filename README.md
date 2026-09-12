@@ -2,7 +2,7 @@
   
 ## JAVA - **Sistema de AAC**
 
-
+<img width="337" height="305" alt="image" src="https://github.com/user-attachments/assets/a02beba9-9615-4b8c-a6d7-4389605b9293" />
 
 **Engenharia de Software**    
 **Projeto Acadêmico | 2° semestre 2026 | Banco de Dados** <br>
