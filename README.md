@@ -36,6 +36,8 @@ Desenvolvimento de um sistema de Comunicação Aumentativa e Alternativa (CAA/AA
 
 <img width="537" height="505" alt="Green and Peach Simple Flowchart  (3)" src="https://github.com/user-attachments/assets/2025c27f-41ef-4768-8d9c-a166556d078c" />
 
+</div>
+
 ----
 
 ## 💻 Tecnologias
