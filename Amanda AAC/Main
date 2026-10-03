@@ -1,1 +1,148 @@
+package org.example;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Scanner;
+
+public class Main {
+
+    private static String gerarPrancha(String tema) throws Exception {
+        String prompt =
+                "<start_of_turn>user\n" +
+                        "Você monta pranchas de CAA (pictogramas, pt-BR). Para o PEDIDO, liste ~12 itens concretos e relevantes, " +
+                        "um por linha, no formato palavra|tipo|sinônimos (tipo: v/s/a/e/l/p). Só a lista.\n\n" +
+                        "PEDIDO: monta uma prancha sobre " + tema +
+                        "<end_of_turn>\n<start_of_turn>model\n";
+
+        ObjectMapper mapper = new ObjectMapper();
+        Map<String, Object> corpo = Map.of(
+                "model", "hf.co/tardellirs/aac-board-generator-770m-ptbr-GGUF:Q4_K_M",
+                "prompt", prompt,
+                "raw", true,
+                "stream", false,
+                "options", Map.of("temperature", 0, "num_predict", 320)
+        );
+
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("http://127.0.0.1:11434/api/generate"))
+                .header("Content-Type", "application/json")
+                .POST(HttpRequest.BodyPublishers.ofByteArray(mapper.writeValueAsBytes(corpo)))
+                .build();
+
+        HttpClient http = HttpClient.newHttpClient();
+        HttpResponse<String> resposta = http.send(request, HttpResponse.BodyHandlers.ofString());
+
+        JsonNode json = mapper.readTree(resposta.body());
+        return json.path("response").asText();
+    }
+
+    private static String extrairPalavra(String linhaBruta) {
+        String linha = linhaBruta.trim();
+
+        linha = linha.replaceAll("^\\*+", "").replaceAll("\\*+$", "").trim();
+        linha = linha.replaceAll("^[\\-•]\\s*", "");
+        linha = linha.replaceAll("^\\d+[\\.\\)]\\s*", "");
+        linha = linha.trim();
+
+        if (linha.isBlank()) return null;
+
+        if (linha.contains("|")) {
+            linha = linha.split("\\|")[0].trim();
+        }
+
+        linha = linha.replaceAll("^\\*+", "").replaceAll("\\*+$", "").trim();
+
+        if (linha.length() > 40 || linha.endsWith(":") || linha.isBlank()) return null;
+
+        return linha;
+    }
+
+    private static List<ItemArasaac> buscarComRetentativa(Arasaac arasaac, String palavra) throws Exception {
+        List<ItemArasaac> resultados = arasaac.buscar(palavra);
+        if (!resultados.isEmpty()) return resultados;
+        return arasaac.buscar(palavra.toLowerCase());
+    }
+
+    private static List<ItemArasaac> buscarCandidatosPorPalavras(Arasaac arasaac, String conceito) throws Exception {
+        Map<Integer, ItemArasaac> candidatos = new LinkedHashMap<>();
+        for (String palavra : conceito.split("\\s+")) {
+            if (palavra.isBlank()) continue;
+            for (ItemArasaac item : buscarComRetentativa(arasaac, palavra)) {
+                candidatos.putIfAbsent(item.id(), item);
+            }
+        }
+        return new ArrayList<>(candidatos.values());
+    }
+
+    private static ItemArasaac escolherMelhorPorEmbedding(OllamaService ollama, Pictogramas buscador,
+                                                          String conceito, List<ItemArasaac> candidatos) throws Exception {
+        double[] vetorConceito = vetorDe(ollama, "task: search result | query: " + conceito);
+
+        List<ItemCatalogo> candidatosComVetor = new ArrayList<>();
+        for (ItemArasaac c : candidatos) {
+            double[] vetorCandidato = vetorDe(ollama, "title: none | text: " + c.palavra());
+            candidatosComVetor.add(new ItemCatalogo(c.id(), c.palavra(), vetorCandidato));
+        }
+
+        ItemCatalogo melhor = buscador.buscarMaisParecido(vetorConceito, candidatosComVetor);
+        return new ItemArasaac(melhor.id(), melhor.palavra());
+    }
+
+    private static double[] vetorDe(OllamaService ollama, String prompt) throws Exception {
+        OllamaEmbed resposta = ollama.gerarEmbedding(prompt);
+        return resposta.embeddings.get(0).stream().mapToDouble(Double::doubleValue).toArray();
+    }
+
+    public static void main(String[] args) throws Exception {
+        Scanner s = new Scanner(System.in);
+
+        System.out.println("Digite o tema:");
+        String tema = s.nextLine();
+
+        String respostaGerador = gerarPrancha(tema);
+
+        System.out.println("\n===== PRANCHA GERADA =====");
+        System.out.println(respostaGerador);
+
+        Arasaac arasaac = new Arasaac();
+        OllamaService ollama = new OllamaService();
+        Pictogramas buscador = new Pictogramas();
+
+        System.out.println("\n===== BUSCANDO PICTOGRAMAS =====");
+
+        for (String linhaGerada : respostaGerador.split("\\R")) {
+            String conceito = extrairPalavra(linhaGerada);
+            if (conceito == null) continue;
+
+            List<ItemArasaac> diretos = buscarComRetentativa(arasaac, conceito);
+            ItemArasaac escolhido = null;
+
+            if (!diretos.isEmpty()) {
+                escolhido = diretos.get(0);
+            } else {
+                List<ItemArasaac> candidatos = buscarCandidatosPorPalavras(arasaac, conceito);
+                if (!candidatos.isEmpty()) {
+                    escolhido = escolherMelhorPorEmbedding(ollama, buscador, conceito, candidatos);
+                }
+            }
+
+            if (escolhido == null) {
+                System.out.println(conceito + " -> NENHUM pictograma encontrado (nem direto, nem por embedding)");
+            } else {
+                System.out.println(conceito + " -> " + escolhido.palavra() + " | ID " + escolhido.id()
+                        + " -> https://static.arasaac.org/pictograms/" + escolhido.id() + "/" + escolhido.id() + "_500.png");
+            }
+        }
+
+        s.close();
+    }
+}
