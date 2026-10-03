@@ -1,0 +1,43 @@
+package org.example;
+
+import java.util.List;
+
+public class Pictogramas {
+
+    public ItemCatalogo buscarMaisParecido(
+            double[] vetorConsulta,
+            List<ItemCatalogo> catalogo) {
+
+        ItemCatalogo melhorItem = null;
+        double melhorSimilaridade = -1.0;
+
+        for (ItemCatalogo item : catalogo) {
+
+            double similaridade =
+                    similaridadeCosseno(vetorConsulta, item.vetor());
+
+            if (similaridade > melhorSimilaridade) {
+                melhorSimilaridade = similaridade;
+                melhorItem = item;
+            }
+        }
+
+        return melhorItem;
+    }
+
+    private double similaridadeCosseno(double[] a, double[] b) {
+
+        double produtoEscalar = 0;
+        double tamanhoA = 0;
+        double tamanhoB = 0;
+
+        for (int i = 0; i < a.length; i++) {
+            produtoEscalar += a[i] * b[i];
+            tamanhoA += a[i] * a[i];
+            tamanhoB += b[i] * b[i];
+        }
+
+        return produtoEscalar /
+                (Math.sqrt(tamanhoA) * Math.sqrt(tamanhoB));
+    }
+}
