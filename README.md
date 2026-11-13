@@ -22,12 +22,12 @@ Desenvolvimento de um sistema de Comunicação Aumentativa e Alternativa (CAA/AA
 
 <div align="center">
 
-| Entrega         |    Período |
-| :-------------: | :-----------:| 
-|  **ENTREGA 1** | 17/08 - 02/10 | 
-| :-------------: | :-----------:| 
-|  **ENTREGA 2** | 02/10 - 13/11 | 
-| :-------------: | :-----------:| 
+## 📅 Cronograma de Entregas
+
+| **Entrega** | **Período** |
+|:---:|:---:|
+| 🚀 **ENTREGA 1** | 17/08 – 02/10 |
+| 🚀 **ENTREGA 2** | 02/10 – 13/11 |
 
 
 </div>
