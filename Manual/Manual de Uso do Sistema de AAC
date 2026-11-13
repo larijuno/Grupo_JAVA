@@ -1,0 +1,107 @@
+Manual de Uso do Sistema de AAC - COMO RODAR EM OUTRO PC
+
+O programa monta pranchas de comunicação alternativa (CAA) com pictogramas
+do ARASAAC a partir de um tema. Ele usa uma IA local (Ollama) e a internet.
+
+Não precisa instalar MySQL, ComfyUI nem placa de vídeo.
+
+
+1. O QUE INSTALAR
+-----------------
+- JDK 21 ou superior ..... https://adoptium.net (ou pelo IntelliJ, passo 4)
+- IntelliJ IDEA .......... https://www.jetbrains.com/idea/download
+                           (a versão Community serve, e ela já traz o Maven)
+- Ollama ................. https://ollama.com/download
+- Internet ............... para buscar os pictogramas no ARASAAC
+- Scene Builder .......... opcional, só para editar a tela visualmente
+                           https://gluonhq.com/products/scene-builder
+
+
+2. INSTALAR O OLLAMA
+--------------------
+1. Baixe e instale o Ollama.
+2. Abra o Ollama. Ele fica com um ícone perto do relógio do Windows.
+
+
+3. BAIXAR OS DOIS MODELOS DE IA
+-------------------------------
+Abra um terminal (cmd ou PowerShell) e rode os DOIS comandos
+(baixam uns 670 MB no total):
+
+   ollama pull hf.co/tardellirs/aac-board-generator-770m-ptbr-GGUF:Q4_K_M
+   ollama pull hf.co/tardellirs/aac-pictogram-retriever-ptbr-GGUF:Q4_K_M
+
+Para conferir, rode:
+
+   ollama list
+
+Os dois modelos têm que aparecer na lista.
+
+
+4. ABRIR O PROJETO NO INTELLIJ
+------------------------------
+1. Copie a pasta Amanda_AAC para o PC.
+   Se quiser levar as pranchas já salvas, copie junto a pasta "pranchas"
+   que fica dentro dela.
+2. No IntelliJ: File > Open > selecione a pasta Amanda_AAC > OK.
+3. Se aparecer um aviso de que falta o JDK:
+   File > Project Structure > Project > SDK > Download JDK
+   > escolha a versão 21 ou superior > Download.
+
+
+5. BAIXAR AS DEPENDÊNCIAS
+-------------------------
+1. Espere o IntelliJ terminar de carregar (barra de progresso no canto de
+   baixo).
+2. Se aparecer o ícone do Maven com setas ("Load Maven Changes"), clique
+   nele. É isso que baixa o JavaFX e o Jackson.
+
+
+6. RODAR
+--------
+1. Confirme que o Ollama está aberto.
+2. Abra src/main/java/org/example/Main.java
+3. Clique na seta verde ao lado de "public class Main" > Run 'Main.main()'.
+
+IMPORTANTE: rode a classe Main, e não a classe App.
+
+Pelo terminal, com o Maven instalado, também funciona:
+
+   mvn javafx:run
+
+
+7. COMO USAR
+------------
+1. Digite o tema (ex.: praia, parquinho, supermercado) e clique em
+   "Gerar prancha" (ou aperte Enter). A primeira vez leva de 10 a 20
+   segundos.
+2. As cores das bordas (chave de Fitzgerald):
+   amarelo = pessoas e nomes, laranja = substantivos, verde = verbos,
+   azul = descritivos, rosa = social.
+3. No topo fica o vocabulário básico (eu, você, quero, não quero, mais,
+   ajuda, sim, não, acabou), que aparece em todas as pranchas.
+4. Passe o mouse sobre um cartão para ver o significado do pictograma.
+5. Editar a prancha:
+   - X no canto do cartão: remove a palavra. Ela não volta quando você
+     gerar esse tema de novo.
+   - Clique no cartão: abre as opções para trocar a imagem. A escolha vale
+     para essa palavra em todas as pranchas.
+   - "Adicionar palavra": inclui um item que a IA não sugeriu.
+6. Toda prancha é salva automaticamente e aparece em "Pranchas salvas", à
+   esquerda. Clique num tema para abrir de novo.
+7. Digitar um tema já salvo abre a versão salva (com as edições) na hora,
+   sem internet nem IA. Para criar uma nova, clique em "Gerar de novo".
+8. Para imprimir: abra pranchas\<tema>\prancha.html no navegador e use
+   Ctrl+P.
+
+
+8. ONDE FICAM OS ARQUIVOS
+-------------------------
+Tudo fica na pasta "pranchas", dentro do projeto:
+
+   pranchas\imagens\       imagens baixadas (usadas por todas as pranchas)
+   pranchas\nucleo.json    vocabulário básico
+   pranchas\palavras.json  memória das edições
+   pranchas\<tema>\        prancha.json (dados) e prancha.html (impressão)
+
+Para levar as pranchas para outro PC, copie essa pasta.
