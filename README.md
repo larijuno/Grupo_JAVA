@@ -2,8 +2,7 @@
   
 ## JAVA - **Sistema de AAC**
 
-
-<img width="337" height="305" alt="Engenharia de Software" src="./Logo.jpeg" />
+<img width="337" height="305" alt="Engenharia de Software" src="./Imagens%20AAC/Logo.jpeg" />
 
 **Engenharia de Software**    
 **Projeto Acadêmico | 2° semestre 2026 | Banco de Dados** <br>
