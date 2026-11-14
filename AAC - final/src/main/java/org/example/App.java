@@ -13,7 +13,7 @@ public class App extends Application {
         Scene cena = new Scene(loader.load());
         cena.getStylesheets().add(folhaDeEstilo());
         palco.setScene(cena);
-        palco.setTitle("Amanda AAC - Prancha de Comunicação");
+        palco.setTitle("Prancha de Comunicação");
         palco.setMinWidth(700);
         palco.setMinHeight(500);
         palco.show();
