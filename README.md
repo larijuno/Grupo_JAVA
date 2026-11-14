@@ -37,7 +37,7 @@ Desenvolvimento de um sistema de Comunicação Aumentativa e Alternativa (CAA/AA
 
 ## **Arquitetura do Projeto**
 
-<img width="537" height="505" alt="Engenharia de Software" src="./fluxograma.png" />
+<img width="537" height="505" alt="Engenharia de Software" src="./Imagens%20AAC/fluxograma.png" />
 </div>
 
 ----
