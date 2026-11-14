@@ -94,6 +94,7 @@ public class Main {
         }
 
         ItemCatalogo melhor = buscador.buscarMaisParecido(vetorConceito, candidatosComVetor);
+        if (melhor == null) return null;
         return new ItemArasaac(melhor.id(), melhor.palavra());
     }
 

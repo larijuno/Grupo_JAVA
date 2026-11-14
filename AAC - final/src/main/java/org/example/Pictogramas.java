@@ -4,28 +4,29 @@ import java.util.List;
 
 public class Pictogramas {
 
-    public ItemCatalogo buscarMaisParecido(
+    public record Achado(ItemCatalogo item, double nota) {
+    }
+
+    public Achado buscarMaisParecido(
             double[] vetorConsulta,
             List<ItemCatalogo> catalogo) {
 
-        ItemCatalogo melhorItem = null;
-        double melhorSimilaridade = -1.0;
+        Achado melhor = null;
 
         for (ItemCatalogo item : catalogo) {
 
             double similaridade =
                     similaridadeCosseno(vetorConsulta, item.vetor());
 
-            if (similaridade > melhorSimilaridade) {
-                melhorSimilaridade = similaridade;
-                melhorItem = item;
+            if (!Double.isNaN(similaridade) && (melhor == null || similaridade > melhor.nota())) {
+                melhor = new Achado(item, similaridade);
             }
         }
 
-        return melhorItem;
+        return melhor;
     }
 
-    private double similaridadeCosseno(double[] a, double[] b) {
+    public double similaridadeCosseno(double[] a, double[] b) {
 
         double produtoEscalar = 0;
         double tamanhoA = 0;

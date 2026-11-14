@@ -1,0 +1,11 @@
+# Maven
+target/
+
+# IntelliJ
+.idea/
+*.iml
+out/
+
+# SO
+.DS_Store
+Thumbs.db

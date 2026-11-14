@@ -1,0 +1,251 @@
+/* Estilo aquarela da Prancha CAA.
+   Só aparência: nenhuma regra aqui muda o que a tela faz.
+   Paleta: rosa #F28CA6, roxo #B98BE0, amarelo #F5C85C, coral #F59E7E, azul #7CB8F0, verde #7FD36B
+   Texto principal: roxo escuro #3B2A5A */
+
+/* ---------- fundo da janela (manchas de aquarela) ---------- */
+.fundo-aquarela {
+    -fx-background-color:
+        radial-gradient(center 0% 0%, radius 38%, rgba(242,140,166,0.55) 0%, rgba(242,140,166,0) 100%),
+        radial-gradient(center 55% 0%, radius 30%, rgba(185,139,224,0.40) 0%, rgba(185,139,224,0) 100%),
+        radial-gradient(center 100% 0%, radius 36%, rgba(245,200,92,0.55) 0%, rgba(245,200,92,0) 100%),
+        radial-gradient(center 100% 100%, radius 40%, rgba(124,184,240,0.55) 0%, rgba(124,184,240,0) 100%),
+        radial-gradient(center 0% 100%, radius 34%, rgba(127,211,107,0.45) 0%, rgba(127,211,107,0) 100%),
+        #FFF8EE;
+}
+
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar:vertical,
+.scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.scroll-bar .thumb {
+    -fx-background-color: #D9C2F0;
+    -fx-background-radius: 8;
+}
+
+.scroll-bar .increment-button,
+.scroll-bar .decrement-button {
+    -fx-background-color: transparent;
+    -fx-padding: 0;
+}
+
+.scroll-bar .increment-arrow,
+.scroll-bar .decrement-arrow {
+    -fx-shape: " ";
+    -fx-padding: 0;
+}
+
+/* ---------- textos ---------- */
+.label {
+    -fx-text-fill: #3B2A5A;
+}
+
+.titulo {
+    -fx-text-fill: #3B2A5A;
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
+}
+
+.subtitulo {
+    -fx-text-fill: #7A56B0;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+}
+
+.dica {
+    -fx-text-fill: #7B6A94;
+}
+
+/* ---------- campos de texto ---------- */
+.text-field {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-background-insets: 0;
+    -fx-border-color: #D9C2F0;
+    -fx-border-width: 2;
+    -fx-border-radius: 16;
+    -fx-padding: 7 14 7 14;
+    -fx-text-fill: #3B2A5A;
+    -fx-prompt-text-fill: #A99BC0;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.text-field:focused {
+    -fx-border-color: #7CB8F0;
+}
+
+/* ---------- botões ---------- */
+.button {
+    -fx-background-color: white;
+    -fx-background-radius: 18;
+    -fx-background-insets: 0;
+    -fx-border-color: #B98BE0;
+    -fx-border-width: 2;
+    -fx-border-radius: 18;
+    -fx-text-fill: #3B2A5A;
+    -fx-padding: 7 16 7 16;
+    -fx-cursor: hand;
+    -fx-faint-focus-color: transparent;
+    -fx-focus-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: #F3E8FC;
+}
+
+.button:pressed {
+    -fx-background-color: #E6D2F7;
+}
+
+.button:disabled {
+    -fx-opacity: 0.5;
+}
+
+.button:default {
+    -fx-background-color: #7CB8F0;
+    -fx-border-color: #4F94D6;
+    -fx-text-fill: #0F2F55;
+    -fx-font-weight: bold;
+}
+
+.button:default:hover {
+    -fx-background-color: #9CCBF5;
+}
+
+.botao-falar {
+    -fx-background-color: #7FD36B;
+    -fx-border-color: #4FB23B;
+    -fx-text-fill: #17430E;
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+}
+
+.botao-falar:hover {
+    -fx-background-color: #98E084;
+}
+
+.botao-falar:pressed {
+    -fx-background-color: #6CC258;
+}
+
+/* ---------- barra da frase ---------- */
+.barra-frase {
+    -fx-background-color: rgba(255,255,255,0.92);
+    -fx-background-radius: 20;
+    -fx-border-color: #7FD36B;
+    -fx-border-width: 3;
+    -fx-border-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(59,42,90,0.15), 10, 0.1, 0, 3);
+}
+
+/* ---------- lista de pranchas salvas ---------- */
+.list-view {
+    -fx-background-color: rgba(255,255,255,0.88);
+    -fx-background-radius: 18;
+    -fx-background-insets: 0;
+    -fx-border-color: #F28CA6;
+    -fx-border-width: 3;
+    -fx-border-radius: 18;
+    -fx-padding: 4;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-background-radius: 12;
+    -fx-text-fill: #3B2A5A;
+    -fx-padding: 8 10 8 10;
+    -fx-cursor: hand;
+}
+
+.list-cell:filled:hover {
+    -fx-background-color: #FDEBF1;
+}
+
+.list-cell:filled:selected,
+.list-cell:filled:selected:hover {
+    -fx-background-color: #E8D5F7;
+    -fx-text-fill: #3B2A5A;
+}
+
+/* ---------- separador e progresso ---------- */
+.separator:horizontal .line {
+    -fx-border-color: #D9C2F0 transparent transparent transparent;
+    -fx-border-width: 2;
+    -fx-border-style: segments(2, 6);
+    -fx-border-insets: 0;
+}
+
+.progress-indicator {
+    -fx-progress-color: #B98BE0;
+}
+
+/* ---------- cartões dos pictogramas ----------
+   A cor da borda e do fundo (chave de Fitzgerald) é aplicada pelo código;
+   aqui ficam forma, sombra e animação ao passar o mouse. */
+.cartao {
+    -fx-background-radius: 20;
+    -fx-border-radius: 20;
+    -fx-border-width: 5;
+    -fx-effect: dropshadow(gaussian, rgba(59,42,90,0.18), 8, 0.1, 0, 3);
+}
+
+.cartao-pequeno {
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-width: 4;
+}
+
+.cartao:hover {
+    -fx-effect: dropshadow(gaussian, rgba(59,42,90,0.35), 14, 0.15, 0, 5);
+    -fx-scale-x: 1.04;
+    -fx-scale-y: 1.04;
+}
+
+.botao-remover {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-text-fill: #A58BC4;
+    -fx-font-size: 14px;
+    -fx-padding: 0 4 0 4;
+}
+
+.botao-remover:hover {
+    -fx-background-color: rgba(242,140,166,0.25);
+    -fx-text-fill: #C2305A;
+    -fx-background-radius: 10;
+}
+
+/* ---------- balões de dica e janela de trocar pictograma ---------- */
+.tooltip {
+    -fx-background-color: #3B2A5A;
+    -fx-background-radius: 12;
+    -fx-text-fill: white;
+    -fx-font-size: 13px;
+    -fx-padding: 8 12 8 12;
+}
+
+.dialog-pane {
+    -fx-background-color: #FFF8EE;
+}
+
+.dialog-pane .header-panel {
+    -fx-background-color: #E8D5F7;
+}
+
+.dialog-pane .header-panel .label {
+    -fx-text-fill: #3B2A5A;
+    -fx-font-weight: bold;
+}

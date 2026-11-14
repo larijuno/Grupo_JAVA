@@ -38,11 +38,20 @@ public class Arasaac {
                         HttpResponse.BodyHandlers.ofString()
                 );
 
+        List<ItemArasaac> resultados =
+                new ArrayList<>();
+
+        // A API devolve 404 (corpo não-JSON) quando não acha nada
+        if (response.statusCode() != 200) {
+            return resultados;
+        }
+
         JsonNode raiz =
                 mapper.readTree(response.body());
 
-        List<ItemArasaac> resultados =
-                new ArrayList<>();
+        if (!raiz.isArray()) {
+            return resultados;
+        }
 
         for (JsonNode pictograma : raiz) {
 
